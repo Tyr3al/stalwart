@@ -2,25 +2,6 @@
 
 All notable changes to this project will be documented in this file. This project adheres to [Semantic Versioning](http://semver.org/).
 
-## [0.16.16-apns.1] - 2026-08-07
-
-Fork versions follow `<upstream-version>-apns.<N>`, resetting `N` to 1 each time the fork
-rebases onto a newer upstream release. Release candidates leading up to a version are tagged
-`-rc.<M>` and marked as a GitHub prerelease.
-
-### Added
-- Apple Push Notification Service (XAPS) support for instant IMAP push to iOS/macOS Mail, compatible with the [dovecot-xaps-daemon](https://github.com/freswa/dovecot-xaps-daemon) protocol:
-  - Configurable push settings (APNs topic, team ID, signing key, sandbox mode, delivery delay), with the required `sysXaps*` permissions synced onto existing roles automatically.
-  - Admin "Push Devices" page listing every account's registered devices, with per-device delete, per-account remove-all, and a "Send test push" action.
-  - Self-service "My Devices" page for users to manage their own registered devices.
-  - "Push Notifications Sent" counter card on the Overview and Delivery dashboards, and a live "Registered Devices" counter card on the Overview dashboard.
-  - Push delivery attempts, including APNs' rejection reason on failure, are logged at Info level.
-- Bundled WebUI now points at [Tyr3al/webui-apns](https://github.com/Tyr3al/webui-apns), the fork's own frontend with the matching XAPS management UI, instead of upstream `stalwartlabs/webui`.
-
-### Fixed
-- `Dockerfile.fdb` pinned the FoundationDB client to an exact patch (`7.4.6`) instead of resolving the latest `7.4.x` release like `Dockerfile.build` already does.
-- `tests`, `crates/utils/proc-macros`, and `crates/trc/event-macro` were left on `0.16.16-apns.8` by every prior version bump; all local packages now report the same version.
-
 ## [0.16.16] - 2026-08-02
 
 If you are upgrading from v0.16.x, replace the binary (or run `docker pull`). If you are upgrading from v0.15.x and below, please read the [upgrading documentation](https://github.com/stalwartlabs/stalwart/blob/main/UPGRADING/v0_16.md) for more information on how to upgrade from previous versions.

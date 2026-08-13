@@ -511,7 +511,7 @@ jobs:
       - name: Build release body
         run: |
           if [ "${{ startsWith(github.ref, 'refs/tags/') }}" = "true" ]; then
-            awk '/^## \[/{c++} c==1' CHANGELOG.md > release_body.md
+            awk '/^## \[/{c++} c==1' CHANGELOG-APNS.md > release_body.md
             echo "" >> release_body.md
           else
             : > release_body.md

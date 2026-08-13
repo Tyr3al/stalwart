@@ -20,13 +20,15 @@
 >
 > See [docs/xaps-integration.md](docs/xaps-integration.md) for the full details,
 > including the reserved numeric ID ranges this fork uses in the auto-generated registry/`trc` schema files
-> (important to know before merging upstream changes).
+> (important to know before merging upstream changes). See [CHANGELOG-APNS.md](CHANGELOG-APNS.md)
+> for the fork's own changes, separate from [upstream's changelog](CHANGELOG.md).
 
 > [!CAUTION]
-> **This fork is under active development and has not had a stable release.** Versions tagged
-> `-rc.*` are release candidates, not finished releases. Run it against production mail data only
-> if you understand the risks and have working backups — data loss is possible.
->
+> **This is an independently maintained fork, not an official Stalwart Labs project.** It carries its
+> own schema/registry ID allocations (see above) and does not track upstream's release cadence, so
+> compatibility with future upstream versions and data-safety guarantees are the fork maintainer's, not
+> Stalwart Labs'. Run it against production mail data only if you understand the risks and have working
+> backups.
 
 > [!IMPORTANT]
 > **A working Apple Push Notification service (APNs) credential is required for push to work at all** —
