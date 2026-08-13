@@ -42,6 +42,8 @@ jobs:
     needs: [linux]
     if: github.event_name == 'push' || inputs.Docker
     steps:
+      - name: Compute lowercase repository (OCI refs require it)
+        run: echo "REPO_LC=$(echo '${{ github.repository }}' | tr '[:upper:]' '[:lower:]')" >> "$GITHUB_ENV"
       - name: Install Cosign
         uses: sigstore/cosign-installer@v4.1.1
       - name: Log In to GitHub Container Registry
@@ -67,20 +69,20 @@ jobs:
       - name: Create ${{matrix.variant}} manifest list and push
         working-directory: ${{ runner.temp }}/${{matrix.variant}}/digests
         run: |
-          docker buildx imagetools create $(jq -cr '.target."docker-metadata-action".tags | map(select(startswith("ghcr.io/${{github.repository}}")) | "-t " + .) | join(" ")' ${{ runner.temp }}/${{matrix.variant}}/bake-meta.json) \
-            $(printf 'ghcr.io/${{github.repository}}@sha256:%s ' *)
+          docker buildx imagetools create $(jq -cr '.target."docker-metadata-action".tags | map(select(startswith("ghcr.io/${{env.REPO_LC}}")) | "-t " + .) | join(" ")' ${{ runner.temp }}/${{matrix.variant}}/bake-meta.json) \
+            $(printf 'ghcr.io/${{env.REPO_LC}}@sha256:%s ' *)
 
       - name: Inspect ${{matrix.variant}} image
         id: manifest-digest
         run: |
-          docker buildx imagetools inspect --format '{{json .Manifest}}' ghcr.io/${{github.repository}}:$(jq -r '.target."docker-metadata-action".args.DOCKER_META_VERSION' ${{ runner.temp }}/${{matrix.variant}}/bake-meta.json) | jq -r '.digest' > GHCR_DIGEST_SHA
+          docker buildx imagetools inspect --format '{{json .Manifest}}' ghcr.io/${{env.REPO_LC}}:$(jq -r '.target."docker-metadata-action".args.DOCKER_META_VERSION' ${{ runner.temp }}/${{matrix.variant}}/bake-meta.json) | jq -r '.digest' > GHCR_DIGEST_SHA
           echo "GHCR_DIGEST_SHA=$(cat GHCR_DIGEST_SHA)" | tee -a "${GITHUB_ENV}"
-          cosign sign --yes $(jq --arg GHCR_DIGEST_SHA "$(cat GHCR_DIGEST_SHA)" -cr '.target."docker-metadata-action".tags | map(select(startswith("ghcr.io/${{github.repository}}")) | . + "@" + $GHCR_DIGEST_SHA) | join(" ")' ${{ runner.temp }}/${{matrix.variant}}/bake-meta.json)
+          cosign sign --yes $(jq --arg GHCR_DIGEST_SHA "$(cat GHCR_DIGEST_SHA)" -cr '.target."docker-metadata-action".tags | map(select(startswith("ghcr.io/${{env.REPO_LC}}")) | . + "@" + $GHCR_DIGEST_SHA) | join(" ")' ${{ runner.temp }}/${{matrix.variant}}/bake-meta.json)
 
       - name: Attest GHCR
         uses: actions/attest-build-provenance@v4
         with:
-          subject-name: ghcr.io/${{github.repository}}
+          subject-name: ghcr.io/${{env.REPO_LC}}
           subject-digest: ${{ env.GHCR_DIGEST_SHA }}
           push-to-registry: true
 
@@ -131,6 +133,9 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v6.0.2
+
+      - name: Compute lowercase repository (OCI refs require it)
+        run: echo "REPO_LC=$(echo '${{ github.repository }}' | tr '[:upper:]' '[:lower:]')" >> "$GITHUB_ENV"
 
       - name: Free disk space (heavy ARM targets)
         if: contains(matrix.target, 'arm')
@@ -217,7 +222,7 @@ jobs:
         id: meta
         with:
           images: |
-            ghcr.io/${{github.repository}}
+            ghcr.io/${{env.REPO_LC}}
           flavor: |
             suffix=${{matrix.suffix}},onlatest=true
           tags: |
@@ -232,7 +237,7 @@ jobs:
         env:
           DOCKER_BUILD_RECORD_UPLOAD: false
           TARGET: ${{matrix.target}}
-          GHCR_REPO: ghcr.io/${{github.repository}}
+          GHCR_REPO: ghcr.io/${{env.REPO_LC}}
           BUILD_ENV: ${{matrix.build_env}}
           DOCKER_PLATFORM: ${{matrix.platform}}
           SUFFIX: ${{matrix.suffix}}
@@ -240,7 +245,7 @@ jobs:
           source: .
           set: |
             *.tags=
-            image.output=type=image,"name=ghcr.io/${{github.repository}}",push-by-digest=true,name-canonical=true,push=true,compression=zstd,compression-level=9,force-compression=true,oci-mediatypes=true
+            image.output=type=image,"name=ghcr.io/${{env.REPO_LC}}",push-by-digest=true,name-canonical=true,push=true,compression=zstd,compression-level=9,force-compression=true,oci-mediatypes=true
           files: |
             docker-bake.hcl
             ${{ steps.meta.outputs.bake-file }}
