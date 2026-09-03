@@ -1,6 +1,6 @@
 [package]
 name = "managesieve"
-version = "0.16.16-apns.1"
+version = "0.16.21-apns.1"
 edition = "2024"
 
 [dependencies]
@@ -30,3 +30,6 @@ rkyv = { version = "0.8.17", features = ["little_endian"] }
 [features]
 test_mode = []
 enterprise = []
+
+[lints]
+workspace = true

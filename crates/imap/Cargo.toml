@@ -1,6 +1,6 @@
 [package]
 name = "imap"
-version = "0.16.16-apns.1"
+version = "0.16.21-apns.1"
 edition = "2024"
 
 [dependencies]
@@ -29,3 +29,6 @@ compact_str = "0.10.0"
 [features]
 test_mode = []
 xaps = ["imap_proto/xaps", "common/xaps", "email/xaps"]
+
+[lints]
+workspace = true

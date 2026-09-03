@@ -9,6 +9,11 @@ Fork versions follow `<upstream-version>-apns.<N>`, resetting `N` to 1 each time
 fork rebases onto a newer upstream release. Release candidates leading up to a version
 are tagged `-rc.<M>` and marked as a GitHub prerelease.
 
+## [0.16.21-apns.1] - 2026-09-03
+
+### Changed
+- Rebased onto upstream [v0.16.21](https://github.com/stalwartlabs/stalwart/blob/main/CHANGELOG.md) (from v0.16.16), picking up all upstream changes through v0.16.20 plus one additional fix (empty-password LDAP bind rejection). No XAPS-specific behavior changed.
+
 ## [0.16.16-apns.1] - 2026-08-13
 
 First stable release of the fork.

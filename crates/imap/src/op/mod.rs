@@ -32,6 +32,7 @@ pub mod status;
 pub mod store;
 pub mod subscribe;
 pub mod thread;
+pub mod uidbatches;
 #[cfg(feature = "xaps")]
 pub mod xapple;
 

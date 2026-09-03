@@ -9,7 +9,7 @@
 // NOTE(xaps-fork): must stay > the highest fork-reserved event id (60204),
 // see docs/xaps-integration.md ("Fork numbering" section). Sizes global per-event level/interest arrays.
 pub const TOTAL_EVENT_COUNT: usize = 60205;
-pub const TOTAL_METRIC_COUNT: usize = 367;
+pub const TOTAL_METRIC_COUNT: usize = 371;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub enum EventType {
@@ -243,10 +243,12 @@ pub enum DkimEvent {
     SignatureTagUnexpected = 614,
     SequenceGap = 615,
     SequenceOverflow = 616,
+    ChainTooLong = 635,
     MailFromMismatch = 617,
     RcptToMismatch = 618,
     MailFromDomainMismatch = 619,
     NextDomainMismatch = 620,
+    CustodyBreak = 636,
     PublicKeyFetch = 621,
     PublicKeyMissing = 622,
     PublicKeyMultiple = 623,
@@ -338,6 +340,7 @@ pub enum ImapEvent {
     Subscribe = 192,
     Unsubscribe = 194,
     Thread = 193,
+    UidBatches = 634,
     GetQuota = 57,
     Error = 168,
     RawInput = 183,
@@ -1013,10 +1016,12 @@ pub enum MetricType {
     DkimSignatureTagUnexpected = 348,
     DkimSequenceGap = 349,
     DkimSequenceOverflow = 350,
+    DkimChainTooLong = 367,
     DkimMailFromMismatch = 351,
     DkimRcptToMismatch = 352,
     DkimMailFromDomainMismatch = 353,
     DkimNextDomainMismatch = 354,
+    DkimCustodyBreak = 368,
     DkimPublicKeyFetch = 355,
     DkimPublicKeyMissing = 356,
     DkimPublicKeyMultiple = 357,

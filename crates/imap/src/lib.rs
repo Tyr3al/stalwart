@@ -19,7 +19,7 @@ pub(crate) fn build_greeting(is_tls: bool, xaps_ready: bool) -> Vec<u8> {
     StatusResponse::ok(SERVER_GREETING)
         .with_code(ResponseCode::Capability {
             capabilities: filter_xaps_capability(
-                Capability::all_capabilities(false, is_tls),
+                Capability::all_capabilities(false, is_tls, 0, 0),
                 xaps_ready,
             ),
         })
