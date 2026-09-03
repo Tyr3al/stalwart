@@ -227,9 +227,15 @@ impl Collector {
     }
 
     pub fn collect_gauges(is_enterprise: bool) -> impl Iterator<Item = &'static AtomicGauge> {
-        static E_GAUGES: &[&AtomicGauge] =
-            &[&SERVER_MEMORY, &QUEUE_COUNT, &USER_COUNT, &DOMAIN_COUNT];
-        static C_GAUGES: &[&AtomicGauge] = &[&SERVER_MEMORY, &USER_COUNT, &DOMAIN_COUNT];
+        static E_GAUGES: &[&AtomicGauge] = &[
+            &SERVER_MEMORY,
+            &QUEUE_COUNT,
+            &USER_COUNT,
+            &DOMAIN_COUNT,
+            &XAPS_DEVICE_COUNT,
+        ];
+        static C_GAUGES: &[&AtomicGauge] =
+            &[&SERVER_MEMORY, &USER_COUNT, &DOMAIN_COUNT, &XAPS_DEVICE_COUNT];
 
         if is_enterprise { E_GAUGES } else { C_GAUGES }
             .iter()
@@ -415,4 +421,25 @@ const fn init_conn_metrics() -> [ConnectionMetrics; TOTAL_CONN_TYPES] {
         i += 1;
     }
     array
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    // NOTE(xaps-fork): XAPS_DEVICE_COUNT was wired into update_gauge()/get() but
+    // omitted from collect_gauges()'s E_GAUGES/C_GAUGES lists, so the value was
+    // computed correctly but never actually streamed to clients (live dashboard
+    // card, Prometheus, OTel) -- it always read as 0. Guard against dropping it
+    // from either list again.
+    #[test]
+    fn collect_gauges_includes_xaps_device_count() {
+        for is_enterprise in [true, false] {
+            assert!(
+                Collector::collect_gauges(is_enterprise)
+                    .any(|g| g.id() == MetricType::XapsDeviceCount),
+                "XapsDeviceCount missing from collect_gauges(is_enterprise={is_enterprise})"
+            );
+        }
+    }
 }

@@ -14,6 +14,9 @@ are tagged `-rc.<M>` and marked as a GitHub prerelease.
 ### Changed
 - Rebased onto upstream [v0.16.21](https://github.com/stalwartlabs/stalwart/blob/main/CHANGELOG.md) (from v0.16.16), picking up all upstream changes through v0.16.20 plus one additional fix (empty-password LDAP bind rejection). No XAPS-specific behavior changed.
 
+### Fixed
+- The "Registered Devices" live gauge on the admin Overview dashboard always read 0, even with devices registered. The metric was computed correctly and updated on its `AtomicGauge`, but was never included in the list `collect_gauges()` streams to clients (live SSE feed, Prometheus, OTel export), so the value never reached any consumer.
+
 ## [0.16.16-apns.1] - 2026-08-13
 
 First stable release of the fork.
